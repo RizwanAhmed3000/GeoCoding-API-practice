@@ -12,9 +12,13 @@ function whaerAmI(lat, lng){
             }
         })
         .then((data)=> {
-            console.log(data);
-            console.log(`You are in ${data.country}`);
-            return fetch(`https://restcountries.com/v3.1/name/${data.country}`)
+            if(data.distance == "Throttled! See geocode.xyz/pricing"){
+                throw new Error('API is throttling')
+            } else{
+                console.log(data);
+                console.log(`You are in ${data.country}`);
+                return fetch(`https://restcountries.com/v3.1/name/${data.country}`)
+            }
         })
         .then((counrtyResp)=>{
             console.log(counrtyResp, "==>> country response");
@@ -28,7 +32,10 @@ function whaerAmI(lat, lng){
             console.log(countryData[0], "==>> country data");
             uiCreation(countryData[0]);
         })
-        .catch((err)=> console.log(err))
+        .catch((err)=> {
+            console.log(err);
+            mainContainer.innerHTML = `<h5>${err}</h5>`
+        })
 }
 
 function uiCreation(country){
